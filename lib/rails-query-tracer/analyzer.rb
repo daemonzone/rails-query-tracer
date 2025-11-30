@@ -2,8 +2,6 @@
 
 module RailsQueryTracer
   class Analyzer
-    SLOW_THRESHOLD_MS = 100 # ms
-
     def self.analyze(queries)
       { n_plus_one: detect_n_plus_one(queries), slow: detect_slow_queries(queries) }
     end
@@ -20,7 +18,7 @@ module RailsQueryTracer
     end
 
     def self.detect_slow_queries(queries)
-      queries.select { |q| q[:duration] && q[:duration] > SLOW_THRESHOLD_MS }.map do |q|
+      queries.select { |q| q[:duration] && q[:duration] > RailsQueryTracer::Config.slow_queries_threshold }.map do |q|
         { sql: q[:sql], duration: q[:duration], location: q[:location] }
       end
     end

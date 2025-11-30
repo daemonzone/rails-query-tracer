@@ -1,5 +1,6 @@
 # spec/analyzer_spec.rb
 require "spec_helper"
+require "rails-query-tracer/config"
 require "rails-query-tracer/analyzer"
 
 RSpec.describe RailsQueryTracer::Analyzer do
@@ -12,7 +13,7 @@ RSpec.describe RailsQueryTracer::Analyzer do
         # Slow query
         { sql: "SELECT * FROM authors", duration: 150, location: "file3.rb:20" },
         # Normal query
-        { sql: "SELECT * FROM publishers", duration: 50, location: "file4.rb:30" }
+        { sql: "SELECT * FROM publishers", duration: 20, location: "file4.rb:30" }
       ]
     end
 
@@ -54,7 +55,7 @@ RSpec.describe RailsQueryTracer::Analyzer do
 
   describe ".detect_slow_queries" do
     it "filters out fast queries" do
-      queries = [{ sql: "SELECT * FROM authors", duration: 50, location: "file.rb:2" }]
+      queries = [{ sql: "SELECT * FROM authors", duration: 20, location: "file.rb:2" }]
       result = described_class.detect_slow_queries(queries)
       expect(result).to eq([])
     end
