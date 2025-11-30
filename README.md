@@ -28,6 +28,16 @@ gem install rails-query-tracer
 
 ## Usage
 
+### Configuration
+
+You can customize RailsQueryTracer's behavior by setting options in an initializer (`config/initializers/rails_query_tracer.rb`):
+
+```ruby
+RailsQueryTracer::Config.slow_queries_threshold = 50   # default is 20ms
+RailsQueryTracer::Config.show_stack_trace = true       # default is true
+RailsQueryTracer::Config.log_to_file = "log/query_tracer.log" # optional
+```
+
 ### Tracking Queries
 
 Start tracking SQL queries anywhere in your application (typically in a Rails initializer or a before hook):
@@ -58,7 +68,7 @@ report = RailsQueryTracer::Analyzer.analyze(queries)
 ```
 
 * `report[:n_plus_one]` → array of detected N+1 queries
-* `report[:slow]` → array of slow queries exceeding `100ms` (configurable in `Analyzer::SLOW_THRESHOLD_MS`)
+* `report[:slow]` → array of slow queries exceeding `RailsQueryTracer::Config.slow_queries_threshold` (default 20ms)
 
 ### Reporting
 
@@ -87,27 +97,8 @@ Sample output:
 * **Reset Tracker** before each request in development to avoid mixing queries from different actions.
 * **Ignore schema queries** automatically—RailsQueryTracer ignores `SCHEMA` queries by default.
 * **Combine with `bullet`** for automated notifications in development if you want live alerts.
-* **Adjust slow query threshold** by modifying `RailsQueryTracer::Analyzer::SLOW_THRESHOLD_MS`.
+* **Adjust slow query threshold** via `RailsQueryTracer::Config.slow_queries_threshold`.
 * Avoid running in production unless you specifically need performance diagnostics, as it collects all queries in memory.
-
----
-
-## Development
-
-Clone the repository and build the gem:
-
-```bash
-git clone <repo-url>
-cd rails-query-tracer
-bundle install
-bundle exec rake build
-```
-
-Run tests:
-
-```bash
-bundle exec rspec
-```
 
 ---
 
@@ -123,4 +114,4 @@ bundle exec rspec
 
 ## License
 
-MIT License. See `LICENSE.txt` for details.
+MIT License
