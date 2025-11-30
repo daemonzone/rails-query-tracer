@@ -10,9 +10,8 @@ module RailsQueryTracer
       attr_reader :queries
 
       def start
-        ActiveSupport::Notifications.subscribe("sql.active_record") do |_name, start, finish, _id, payload|
+        @subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |_name, start, finish, _id, payload|
           next if payload[:name] == "SCHEMA"
-
           location = extract_location
           @queries << {
             sql: payload[:sql],
@@ -20,6 +19,11 @@ module RailsQueryTracer
             location: location
           }
         end
+      end
+
+      def stop
+        ActiveSupport::Notifications.unsubscribe(@subscriber) if @subscriber
+        @subscriber = nil
       end
 
       def extract_location
