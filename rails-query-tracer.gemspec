@@ -15,6 +15,6 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.7.6"
 
-  spec.add_dependency "rails", ">= 6.0"
+  spec.add_runtime_dependency "rails", ">= 6.0", "< 8.0"
   spec.metadata["rubygems_mfa_required"] = "true"
 end
